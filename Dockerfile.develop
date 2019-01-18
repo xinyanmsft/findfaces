@@ -1,0 +1,16 @@
+FROM xinyan/findfaces:build
+
+LABEL description="Container for use with VS / AZDS"
+
+# clean /src directory, copy local contents.
+WORKDIR /src
+RUN rmdir --ignore-fail-on-non-empty /src
+COPY ./src /src 
+
+# compile
+WORKDIR /src/out
+RUN cmake .. -DCMAKE_BUILD_TYPE=Debug -DCMAKE_TOOLCHAIN_FILE=/tmp/vcpkg/scripts/buildsystems/vcpkg.cmake \
+    && make
+
+WORKDIR /src/out/
+CMD ./findfaces
